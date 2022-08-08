@@ -16,15 +16,13 @@ provider "aws" {
 resource "aws_secuurity_group" "http_server" {
     name = "http-server"
     vpc_id = aws_default_vpc.default.vpc_id
-    ingress {
-        from_port = var.list_of_ports[0]
-        to_port = var.list_of_ports[0]
-        protocol = "tcp"
-    }
-    ingress {
-        from_port = var.list_of_ports[1]
-        to_port = var.list_of_ports[1]
-        protocol = "tcp"
+    dynamic "ingress" {
+        for_each = var.list_of_ports
+        content {
+            from_port = ingress.value
+            to_port = ingress.value
+            protocol = "tcp"
+        }
     }
 }
 
